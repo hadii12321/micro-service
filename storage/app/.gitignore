@@ -1,0 +1,8 @@
+*
+!private/
+!dokumen/
+!dokumen/role.json
+!certs/
+!certs/cacert.pem
+!public/
+!.gitignore
