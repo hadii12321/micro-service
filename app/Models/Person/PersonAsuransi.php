@@ -79,4 +79,5 @@ final class PersonAsuransi extends Model implements Auditable
     {
         return $value ? Carbon::parse($value)->format('Y-m-d') : null;
     }
+    
 }

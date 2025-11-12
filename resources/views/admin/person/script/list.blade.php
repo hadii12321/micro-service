@@ -41,10 +41,29 @@
             order: [],
             ordering: true,
             columns: [{
-                data: 'action',
-                name: 'action',
+                data: 'id',
+                name: 'id',
                 orderable: false,
-                searchable: false
+                searchable: false,
+                render: function(data, type, row) {
+                    // Tombol Aksi - Detail, Edit, Delete
+                    return `
+                        <div class="btn-group">
+                            <button class="btn btn-info btn-sm btn-detail" data-bs-toggle="modal" 
+                                    data-bs-target="#form_detail" data-id="${data}" title="Detail">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-warning btn-sm btn-edit" data-bs-toggle="modal" 
+                                    data-bs-target="#form_edit" data-id="${data}" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" 
+                                    data-bs-target="#form_delete" data-id="${data}" data-nama="${row.nama}" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                }
             },
                 {
                     data: 'nama',

@@ -65,6 +65,7 @@
     @include('admin.person.view.detail')
     @include('admin.person.view.create')
     @include('admin.person.view.edit')
+    @include('admin.person.view.delete')
 @endsection
 
 @section('javascript')
@@ -105,4 +106,5 @@
     @include('admin.person.script.create')
     @include('admin.person.script.edit')
     @include('admin.person.script.detail')
+    @include('admin.person.script.delete')
 @endsection
