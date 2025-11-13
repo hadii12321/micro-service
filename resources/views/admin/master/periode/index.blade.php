@@ -56,6 +56,7 @@
     @include('admin.master.periode.view.detail')
     @include('admin.master.periode.view.create')
     @include('admin.master.periode.view.edit')
+        @include('admin.master.periode.view.delete')
 @endsection
 
 @section('javascript')
@@ -76,4 +77,5 @@
     @include('admin.master.periode.script.create')
     @include('admin.master.periode.script.edit')
     @include('admin.master.periode.script.detail')
+      @include('admin.master.periode.script.delete')
 @endsection
