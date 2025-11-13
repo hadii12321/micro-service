@@ -11,6 +11,9 @@ use App\Services\Tools\TransactionService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Exception;
+use Illuminate\Database\QueryException;
 
 final class PersonController extends Controller
 {
@@ -35,6 +38,7 @@ final class PersonController extends Controller
                 'action' => fn($row) => implode(' ', [
                     $this->transactionService->actionButton($row->id_person, 'detail'),
                     $this->transactionService->actionButton($row->id_person, 'edit'),
+                    $this->transactionService->actionButton($row->id_person, 'delete'),
                 ]),
             ]
         );
@@ -51,7 +55,10 @@ final class PersonController extends Controller
     {
         $foto = $request->file('foto');
 
-        return $this->transactionService->handleWithTransaction(function () use ($request, $foto) {
+        // MANUAL TRANSACTION IMPLEMENTATION
+        DB::beginTransaction(); // EXPLICIT BEGIN TRANSACTION
+
+        try {
             $payload = $request->only([
                 'nama',
                 'jk',
@@ -74,23 +81,45 @@ final class PersonController extends Controller
 
             if ($foto) {
                 $uploadResult = $this->personService->handleFileUpload($foto);
-                $created->update(['foto' => $uploadResult['file_name']]);
+                if ($uploadResult) {
+                    $created->update(['foto' => $uploadResult['file_name']]);
+                }
             }
 
+            DB::commit(); // EXPLICIT COMMIT
+
             return $this->responseService->successResponse('Data berhasil dibuat', $created, 201);
-        });
+
+        } catch (QueryException $e) {
+            DB::rollBack(); // EXPLICIT ROLLBACK
+            
+            return $this->responseService->errorResponse(
+                'Terjadi kesalahan database: ' . $e->getMessage(), 
+                500
+            );
+        } catch (Exception $e) {
+            DB::rollBack(); // EXPLICIT ROLLBACK
+            
+            return $this->responseService->errorResponse(
+                'Terjadi kesalahan: ' . $e->getMessage(), 
+                500
+            );
+        }
     }
 
     public function update(PersonUpdateRequest $request, string $id): JsonResponse
     {
         $data = $this->personService->findById($id);
         if (!$data) {
-            return $this->responseService->errorResponse('Data tidak ditemukan');
+            return $this->responseService->errorResponse('Data tidak ditemukan', 404);
         }
 
         $foto = $request->file('foto');
 
-        return $this->transactionService->handleWithTransaction(function () use ($request, $data, $foto) {
+        // MANUAL TRANSACTION IMPLEMENTATION
+        DB::beginTransaction(); // EXPLICIT BEGIN TRANSACTION
+
+        try {
             $payload = $request->only([
                 'nama',
                 'jk',
@@ -113,11 +142,30 @@ final class PersonController extends Controller
 
             if ($foto) {
                 $uploadResult = $this->personService->handleFileUpload($foto, $updatedData);
-                $updatedData->update(['foto' => $uploadResult['file_name']]);
+                if ($uploadResult) {
+                    $updatedData->update(['foto' => $uploadResult['file_name']]);
+                }
             }
 
+            DB::commit(); // EXPLICIT COMMIT
+
             return $this->responseService->successResponse('Data berhasil diperbarui', $updatedData);
-        });
+
+        } catch (QueryException $e) {
+            DB::rollBack(); // EXPLICIT ROLLBACK
+            
+            return $this->responseService->errorResponse(
+                'Terjadi kesalahan database: ' . $e->getMessage(), 
+                500
+            );
+        } catch (Exception $e) {
+            DB::rollBack(); // EXPLICIT ROLLBACK
+            
+            return $this->responseService->errorResponse(
+                'Terjadi kesalahan: ' . $e->getMessage(), 
+                500
+            );
+        }
     }
 
     public function show(string $id): JsonResponse
@@ -125,7 +173,81 @@ final class PersonController extends Controller
         return $this->transactionService->handleWithShow(function () use ($id) {
             $data = $this->personService->getDetailData($id);
 
+            if (!$data) {
+                return $this->responseService->errorResponse('Data tidak ditemukan', 404);
+            }
+
             return $this->responseService->successResponse('Data berhasil diambil', $data);
+        });
+    }
+
+    public function destroy(string $id): JsonResponse
+    {
+        $data = $this->personService->findById($id);
+        if (!$data) {
+            return $this->responseService->errorResponse('Data tidak ditemukan', 404);
+        }
+
+        // MANUAL TRANSACTION IMPLEMENTATION
+        DB::beginTransaction(); // EXPLICIT BEGIN TRANSACTION
+
+        try {
+            // Jika ada file foto, handle delete file melalui FileUploadService
+            if ($data->foto) {
+                // Anda perlu menambahkan method deleteFile di PersonService atau FileUploadService
+                // $this->personService->deleteFile($data->foto);
+            }
+
+            $data->delete();
+
+            DB::commit(); // EXPLICIT COMMIT
+
+            return $this->responseService->successResponse('Data berhasil dihapus');
+
+        } catch (QueryException $e) {
+            DB::rollBack(); // EXPLICIT ROLLBACK
+            
+            return $this->responseService->errorResponse(
+                'Terjadi kesalahan database: ' . $e->getMessage(), 
+                500
+            );
+        } catch (Exception $e) {
+            DB::rollBack(); // EXPLICIT ROLLBACK
+            
+            return $this->responseService->errorResponse(
+                'Terjadi kesalahan: ' . $e->getMessage(), 
+                500
+            );
+        }
+    }
+
+    public function findByNik(Request $request): JsonResponse
+    {
+        $request->validate([
+            'nik' => 'required|string|max:16'
+        ]);
+
+        return $this->transactionService->handleWithShow(function () use ($request) {
+            $person = $this->personService->findByNik($request->nik);
+
+            if (!$person) {
+                return $this->responseService->errorResponse('Data dengan NIK tersebut tidak ditemukan', 404);
+            }
+
+            return $this->responseService->successResponse('Data berhasil ditemukan', $person);
+        });
+    }
+
+    public function getByUuid(string $uuid): JsonResponse
+    {
+        return $this->transactionService->handleWithShow(function () use ($uuid) {
+            $person = $this->personService->getPersonDetailByUuid($uuid);
+
+            if (!$person) {
+                return $this->responseService->errorResponse('Data tidak ditemukan', 404);
+            }
+
+            return $this->responseService->successResponse('Data berhasil diambil', $person);
         });
     }
 }
