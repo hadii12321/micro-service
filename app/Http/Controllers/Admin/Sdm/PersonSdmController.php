@@ -50,6 +50,7 @@ final class PersonSdmController extends Controller
                     $this->transactionService->actionButton($row->id_sdm, 'detail'),
                     $this->transactionService->actionButton($row->id_sdm, 'edit'),
                     $this->transactionService->actionLink(route('admin.sdm.sdm.histori', $row->uuid_person), 'histori', 'Riwayat'),
+                     $this->transactionService->actionButton($row->id_sdm, 'delete'),
                 ]),
             ]
         );
@@ -113,4 +114,14 @@ final class PersonSdmController extends Controller
             return $this->responseService->successResponse('Data berhasil diambil', $data);
         });
     }
+    public function destroy (string $id) {
+        return $this->transactionService->handleWithTransaction(function () use($id){
+            $deleteData = $this->personSdmService->delete($id);
+            if(!$deleteData){
+                return $this->responseService->errorResponse('Data tidak ditemukan');
+            }
+            return $this->responseService->successResponse('Data berhasil dihapus', $deleteData);
+        });
+    }
+   
 }

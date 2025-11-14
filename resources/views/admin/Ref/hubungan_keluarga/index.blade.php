@@ -79,4 +79,5 @@
     @include('admin.ref.hubungan_keluarga.script.create')
     @include('admin.ref.hubungan_keluarga.script.edit')
     @include('admin.ref.hubungan_keluarga.script.detail')
+    @include('admin.ref.hubungan_keluarga.script.delete')
 @endsection

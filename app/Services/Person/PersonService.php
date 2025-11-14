@@ -8,6 +8,7 @@ use App\Models\Sdm\SdmKeluarga;
 use Illuminate\Support\Collection;
 use App\Models\Person\PersonAsuransi;
 use App\Services\Tools\FileUploadService;
+use Illuminate\Support\Facades\Log;
 
 final readonly class PersonService
 {
@@ -135,4 +136,41 @@ final readonly class PersonService
             ->where('person.uuid_person', $uuid)
             ->first();
     }
+
+   public function delete(string $id): bool
+{
+    $person = Person::where('id_person', $id)->first();
+    $personAsuransi = PersonAsuransi::where('id_person', $id)->first();
+    $sdmKeluarga = SdmKeluarga::where('id_person', $id)->first();
+    $personSdm = PersonSdm::where('id_person', $id)->first();
+
+    try {
+        if ($personAsuransi) {
+            $personAsuransi->delete();
+        }
+
+        if ($sdmKeluarga) {
+            $sdmKeluarga->delete();
+        }
+
+        if ($personSdm) {
+            $personSdm->delete();
+        }
+
+        if ($person) {
+            $person->delete();
+        }
+
+        return true; // sukses
+
+    } catch (\Throwable $e) {
+
+        Log::error('Gagal menghapus person: ' . $e->getMessage(), [
+            'id_person' => $id
+        ]);
+
+        return false; // gagal
+    }
+}
+
 }

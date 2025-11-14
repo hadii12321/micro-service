@@ -38,6 +38,7 @@ final class RefJenjangPendidikanController extends Controller
                     return implode(' ', [
                         $this->transactionService->actionButton($rowId, 'detail'),
                         $this->transactionService->actionButton($rowId, 'edit'),
+                        $this->transactionService->actionButton($rowId, 'delete'),
                     ]);
                 },
             ]

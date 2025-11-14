@@ -83,4 +83,5 @@
     @include('admin.ref.jenis_asuransi.script.create')
     @include('admin.ref.jenis_asuransi.script.edit')
     @include('admin.ref.jenis_asuransi.script.detail')
+     @include('admin.ref.jenis_asuransi.script.delete')
 @endsection

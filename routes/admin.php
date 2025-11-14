@@ -51,6 +51,8 @@ Route::prefix('sdm')->group(function () {
         ->name('sdm.sdm.histori');
     Route::get('find/by/nik/{id}', [PersonSdmController::class, 'find_by_nik'])
         ->name('sdm.sdm.find_by_nik');
+    Route::post('destroy/{id}', [PersonSdmController::class, 'destroy'])
+        ->name('sdm.destroy');    
 
     Route::prefix('riwayat-pendidikan')->group(function () {
         Route::get('/{id}', [SdmRiwayatPendidikanController::class, 'index'])
@@ -186,6 +188,8 @@ Route::prefix('ref')->group(function () {
             ->name('ref.jenjang-pendidikan.store');
         Route::post('update/{id}', [RefJenjangPendidikanController::class, 'update'])
             ->name('ref.jenjang-pendidikan.update');
+            Route::post('destroy/{id}', [RefJenjangPendidikanController::class, 'destroy'])
+            ->name('ref.jenjang_pendidikan.destroy');
     });
 
     Route::prefix('hubungan-keluarga')->group(function () {
@@ -199,6 +203,8 @@ Route::prefix('ref')->group(function () {
             ->name('ref.hubungan-keluarga.store');
         Route::post('update/{id}', [RefHubunganKeluargaController::class, 'update'])
             ->name('ref.hubungan-keluarga.update');
+             Route::post('destroy/{id}', [RefHubunganKeluargaController::class, 'destroy'])
+            ->name('ref.hubungan_keluarga.destroy');
     });
 
     Route::prefix('jenis-asuransi')->group(function () {
@@ -212,6 +218,8 @@ Route::prefix('ref')->group(function () {
             ->name('ref.jenis-asuransi.store');
         Route::post('update/{id}', [RefJenisAsuransiController::class, 'update'])
             ->name('ref.jenis-asuransi.update');
+            Route::post('destroy/{id}', [RefJenisAsuransiController::class, 'destroy'])
+            ->name('ref.jenis_asuransi.destroy');
     });
 
     Route::prefix('eselon')->group(function () {
@@ -225,5 +233,7 @@ Route::prefix('ref')->group(function () {
             ->name('ref.eselon.store');
         Route::post('update/{id}', [RefEselonController::class, 'update'])
             ->name('ref.eselon.update');
+        Route::post('destroy/{id}', [RefEselonController::class, 'destroy'])
+            ->name('ref.eselon.destroy');
     });
 });

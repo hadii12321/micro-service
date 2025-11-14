@@ -83,4 +83,5 @@
     @include('admin.ref.jenjang_pendidikan.script.create')
     @include('admin.ref.jenjang_pendidikan.script.edit')
     @include('admin.ref.jenjang_pendidikan.script.detail')
+    @include('admin.ref.jenjang_pendidikan.script.delete')
 @endsection

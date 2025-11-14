@@ -77,4 +77,5 @@
     @include('admin.ref.eselon.script.create')
     @include('admin.ref.eselon.script.edit')
     @include('admin.ref.eselon.script.detail')
+    @include('admin.ref.eselon.script.delete')
 @endsection

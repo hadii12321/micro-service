@@ -77,4 +77,5 @@
     @include('admin.sdm.sdm.script.create')
     @include('admin.sdm.sdm.script.edit')
     @include('admin.sdm.sdm.script.detail')
+    @include('admin.sdm.sdm.script.delete')
 @endsection

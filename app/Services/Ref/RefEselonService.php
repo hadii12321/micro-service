@@ -2,6 +2,7 @@
 
 namespace App\Services\Ref;
 
+use App\Models\Master\MasterJabatan;
 use App\Models\Ref\RefEselon;
 use Illuminate\Support\Collection;
 
@@ -41,6 +42,7 @@ final class RefEselonService
 
     public function delete(RefEselon $eselon): void
     {
+
         $eselon->delete();
     }
 }

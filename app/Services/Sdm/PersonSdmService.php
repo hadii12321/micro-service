@@ -7,6 +7,7 @@ use App\Models\Sdm\PersonSdm;
 use App\Services\Person\PersonService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 final readonly class PersonSdmService
 {
@@ -96,5 +97,26 @@ final readonly class PersonSdmService
     public function findByNik(string $nik): ?Person
     {
         return $this->personService->findByNik($nik);
+    }
+
+    public function delete(string $id): bool
+    {
+        $personSdm = PersonSdm::where('id_sdm', $id)->first();
+
+        try {
+        if($personSdm){
+            $personSdm->delete();
+        }
+
+        return true; // sukses
+
+    } catch (\Throwable $e) {
+
+        Log::error('Gagal menghapus person: ' . $e->getMessage(), [
+            'id_sdm' => $id
+        ]);
+
+        return false; // gagal
+    }
     }
 }
