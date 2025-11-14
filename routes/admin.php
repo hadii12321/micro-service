@@ -32,6 +32,8 @@ Route::prefix('person')->group(function () {
         ->name('person.store');
     Route::post('update/{id}', [PersonController::class, 'update'])
         ->name('person.update');
+    Route::post('destroy/{id}', [PersonController::class, 'destroy'])
+        ->name('person.destroy');
 });
 
 Route::prefix('sdm')->group(function () {

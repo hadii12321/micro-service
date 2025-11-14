@@ -123,4 +123,5 @@ final readonly class PersonService
             ->where('person.uuid_person', $uuid)
             ->first();
     }
+    
 }

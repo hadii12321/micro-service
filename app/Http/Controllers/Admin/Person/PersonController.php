@@ -35,6 +35,7 @@ final class PersonController extends Controller
                 'action' => fn($row) => implode(' ', [
                     $this->transactionService->actionButton($row->id_person, 'detail'),
                     $this->transactionService->actionButton($row->id_person, 'edit'),
+                    $this->transactionService->actionButton($row->id_person, 'delete'),
                 ]),
             ]
         );
@@ -127,5 +128,8 @@ final class PersonController extends Controller
 
             return $this->responseService->successResponse('Data berhasil diambil', $data);
         });
+    }
+    public function delete(string $id){
+
     }
 }

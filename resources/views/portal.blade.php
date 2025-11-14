@@ -10,6 +10,30 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/fonts/font.css') }}" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="{{ asset('assets/plugins/plugins.bundle.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.bundle.css') }}">
+
+    <!-- Custom recaptcha sizing -->
+    <style>
+        /* Sesuaikan skala widget reCAPTCHA (tidak merusak iframe internal) */
+        .recaptcha-container {
+            transform: scale(0.85);
+            transform-origin: center;
+            display: inline-block;
+        }
+
+        @media (max-width: 480px) {
+            .recaptcha-container {
+                transform: scale(0.75);
+            }
+        }
+
+        /* Jika butuh spasi lebih rapih */
+        .recaptcha-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 
 <body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed aside-enabled aside-fixed"
@@ -23,7 +47,6 @@
                         <form class="w-lg-500px w-sm-500px p-10 bg-white rounded-3 shadow" novalidate="novalidate"
                               id="kt_sign_in_form" method="POST" action="{{ route('logindb') }}">
                             @csrf
-                            <input type="hidden" name="recaptcha_token" id="recaptcha_token">
                             @include('errors.flash')
                             <div class="text-center mb-11">
                                 <h1 class="text-dark fw-bolder mb-4">Masuk</h1>
@@ -33,7 +56,7 @@
                                     <span class="required">nama pengguna</span>
                                 </label>
                                 <input type="text" placeholder="Masukkan nama pengguna" name="username"
-                                       autocomplete="off" class="form-control bg-transparent">
+                                       autocomplete="off" class="form-control bg-transparent" value="{{ old('username') }}">
                             </div>
                             <div class="d-flex flex-column mb-2" data-kt-password-meter="true">
                                 <label class="form-label fs-6 fw-bold mb-2">
@@ -43,12 +66,21 @@
                                     <input class="form-control bg-transparent" type="password"
                                            placeholder="Masukkan kata sandi" name="password" autocomplete="off">
                                     <span class="btn btn-sm btn-icon position-absolute top-50 end-0 translate-middle-y me-2"
-                                          data-kt-password-meter-control="visibility">
+                                          data-kt-password-meter-control="visibility" style="pointer-events:none;">
                                         <i class="bi bi-eye-slash fs-2"></i>
                                         <i class="bi bi-eye fs-2 d-none"></i>
                                     </span>
                                 </div>
                             </div>
+
+                            <!-- reCAPTCHA v2 (letakkan di dalam form, sebelum tombol submit) -->
+                            <div class="recaptcha-wrapper">
+                                <div class="recaptcha-container">
+                                    <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                                </div>
+                            </div>
+                            <!-- END reCAPTCHA -->
+
                             <div class="d-grid my-4">
                                 <button type="submit" id="kt_sign_in_submit" class="btn btn-primary">
                                     <span class="indicator-label">Masuk</span>
@@ -65,8 +97,14 @@
         <p class="p-0 m-0">{{ request()->ip() }}</p>
     </footer>
 </div>
+
+<!-- Plugin scripts -->
 <script src="{{ asset('assets/plugins/plugins.bundle.js') }}"></script>
 <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
+
+<!-- reCAPTCHA v2 script -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 </body>
 
 </html>
